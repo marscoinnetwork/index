@@ -1,0 +1,106 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using XOuranos.Index.Core.Client.Types;
+using XOuranos.Index.Core.Handlers;
+using XOuranos.Index.Core.Models;
+using XOuranos.Index.Core.Storage;
+using Microsoft.AspNetCore.Mvc;
+
+namespace XOuranos.Index.Core.Controllers
+{
+   /// <summary>
+   /// Controller to get some information about a coin.
+   /// </summary>
+   [ApiController]
+   [Route("api/stats")]
+   public class StatsController : ControllerBase
+   {
+      private readonly StatsHandler statsHandler;
+
+      private readonly IStorage storage;
+
+      /// <summary>
+      /// Initializes a new instance of the <see cref="StatsController"/> class.
+      /// </summary>
+      public StatsController(StatsHandler statsHandler, IStorage storage)
+      {
+         this.statsHandler = statsHandler;
+         this.storage = storage;
+      }
+
+      [HttpGet]
+      [Route("heartbeat")]
+      public IActionResult Heartbeat()
+      {
+         return Ok("Heartbeat");
+      }
+
+      [HttpGet]
+      [Route("connections")]
+      public async Task<IActionResult> Connections()
+      {
+         StatsConnection ret = await statsHandler.StatsConnection();
+         return Ok(ret);
+      }
+
+      [HttpGet()]
+      public async Task<IActionResult> Get()
+      {
+         Statistics ret = await statsHandler.Statistics();
+         return Ok(ret);
+      }
+
+      /// <summary>
+      /// Returns a lot of information about the network, node and consensus rules.
+      /// </summary>
+      /// <returns></returns>
+      [HttpGet]
+      [Route("info")]
+      public async Task<IActionResult> Info()
+      {
+         CoinInfo ret = await statsHandler.CoinInformation();
+         return Ok(ret);
+      }
+
+      /// <summary>
+      /// Returns a list of currently connected nodes.
+      /// </summary>
+      /// <returns></returns>
+      [HttpGet]
+      [Route("peers")]
+      public async Task<IActionResult> Peers()
+      {
+         System.Collections.Generic.List<Client.Types.PeerInfo> ret = await statsHandler.Peers();
+         return Ok(ret);
+      }
+
+      /// <summary>
+      /// Returns a list of nodes observed after the date supplied in the URL.
+      /// </summary>
+      /// <returns></returns>
+      [HttpGet]
+      [Route("peers/{date}")]
+      public IActionResult Peers(DateTime date)
+      {
+         List<PeerInfo> list = storage.GetPeerFromDate(date)
+            .Select(x => x as PeerInfo)
+            .ToList();
+         return Ok(list);
+      }
+
+      /// <summary>
+      /// Returns fee rate estimations for each of the confirmations in the array.
+      /// </summary>
+      /// <returns></returns>
+      [HttpGet]
+      [Route("fee")]
+      public async Task<IActionResult> FeeEstimation([FromQuery] int[] confirmations)
+      {
+         var res = await statsHandler.GetFeeEstimation(confirmations);
+
+         return Ok(res);
+      }
+   }
+}
