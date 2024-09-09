@@ -35,7 +35,8 @@ namespace XOuranos.Index.Core.Storage.Mongo.SyncTasks
 
       public override async Task<bool> OnExecute()
       {
-         if (!CanRunRichListSync())
+         var isok = CanRunRichListSync();
+         if (!isok)
          {
             return false;
          }

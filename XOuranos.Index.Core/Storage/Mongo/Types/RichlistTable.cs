@@ -4,7 +4,8 @@ namespace XOuranos.Index.Core.Storage.Mongo.Types
 {
   public class RichlistTable
    {
-      [BsonId]
+      //[BsonId]
+      public object _id { get; set; }
       public string Address { get; set; }
       public long Balance { get; set; }
    }

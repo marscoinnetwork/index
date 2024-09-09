@@ -206,7 +206,7 @@ namespace XOuranos.Index.Core.Sync.SyncTasks
                while (pendingBlocksToAddToStorage.TryTake(out _)) { }
                drainBlockingCollection = false;
             }
-
+                if (CancellationToken.IsCancellationRequested) continue;
             SyncBlockTransactionsOperation block = pendingBlocksToAddToStorage.Take(CancellationToken);
 
             storageOperations.AddToStorageBatch(currentStorageBatch, block);

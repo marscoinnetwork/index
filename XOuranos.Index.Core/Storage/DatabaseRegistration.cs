@@ -22,7 +22,7 @@ public static class DatabaseRegistration
       services.AddSingleton<IStorageBatchFactory, MongoStorageBatchFactory>();
       services.AddTransient<IMondoDbInfo, MondoDbInfo>();
       //TODO add this for address driven blockchains
-      //services.AddScoped<TaskRunner, RichListScanning>();
+      services.AddScoped<TaskRunner, RichListScanning>();
 
       services.AddSingleton(_ =>
       {
