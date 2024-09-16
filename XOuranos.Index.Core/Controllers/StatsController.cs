@@ -52,11 +52,58 @@ namespace XOuranos.Index.Core.Controllers
          return Ok(ret);
       }
 
-      /// <summary>
-      /// Returns a lot of information about the network, node and consensus rules.
-      /// </summary>
-      /// <returns></returns>
-      [HttpGet]
+        [HttpGet]
+        [Route("getblockchaininfo")]
+        public async Task<IActionResult> GetInfo()
+        {
+            Statistics ret = await statsHandler.Statistics();
+            var info = new GetBlockchainInfoResult() {
+                Chain="main",
+                Blocks=ret.Blockchain.Blocks,
+                Moneysupply=0,
+                Moneysupply_formatted="0",
+                Zerocoinsupply=new List<ZerocoinSupply>() { },
+                Headers=ret.Blockchain.Blocks,
+                Bestblockhash=ret.Blockchain.BestBlockHash,
+                Difficulty_pow=ret.Blockchain.Difficulty,
+                Difficulty_randomx=ret.Blockchain.Difficulty,
+                Difficulty_progpow=ret.Blockchain.Difficulty,
+                Difficulty_sha256d=ret.Blockchain.Difficulty,
+                Difficulty_pos=ret.Blockchain.NetworkWeight,
+                Mediantime=(ulong)ret.Blockchain.MedianTime,
+                verificationprogress=ret.Blockchain.VerificationProgress,
+                initialblockdownload=ret.Blockchain.IsInitialBlockDownload,
+                chainwork=ret.Blockchain.Chainwork,
+                chainpow=ret.Blockchain.Chainwork,
+                Size_on_disk=0,
+                pruned=ret.Blockchain.IsPruned,
+                bip9_softforks=new Dictionary<string, Softfork>() {},
+                warnings="",
+                Next_super_block=0
+            };
+            info.bip9_softforks.Add("zc_limp", new Softfork() {
+                status="active",
+                startTime=0,
+            });
+            return Ok(info);
+        }
+
+        [HttpGet]
+        [Route("getchainalgostats")]
+        public async Task<IActionResult> GetStats()
+        {
+            Statistics ret = await statsHandler.Statistics();
+            var info = new GetChainalgoStats();
+            info.Result = new GetChainalgoStatsResult() {
+            };
+            return Ok(info);
+        }
+
+        /// <summary>
+        /// Returns a lot of information about the network, node and consensus rules.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
       [Route("info")]
       public async Task<IActionResult> Info()
       {

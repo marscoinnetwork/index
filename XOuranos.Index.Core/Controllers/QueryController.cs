@@ -6,6 +6,8 @@ using XOuranos.Index.Core.Paging;
 using XOuranos.Index.Core.Storage;
 using XOuranos.Index.Core.Storage.Types;
 using Microsoft.AspNetCore.Mvc;
+using XOuranos.Index.Core.Models;
+using XOuranos.Index.Core.Handlers;
 
 namespace XOuranos.Index.Core.Controllers
 {
@@ -28,12 +30,12 @@ namespace XOuranos.Index.Core.Controllers
          this.storage = storage;
       }
 
-      /// <summary>
-      /// Get the balance on address.
-      /// </summary>
-      /// <param name="address"></param>
-      /// <returns></returns>
-      [HttpGet]
+        /// <summary>
+        /// Get the balance on address.
+        /// </summary>
+        /// <param name="address"></param>
+        /// <returns></returns>
+        [HttpGet]
       [Route("address/{address}")]
       public IActionResult GetAddress([MinLength(4)][MaxLength(100)] string address)
       {
@@ -145,13 +147,51 @@ namespace XOuranos.Index.Core.Controllers
          return OkPaging(storage.Blocks(offset, limit));
       }
 
-      /// <summary>
-      /// Return transactions in a block based on block hash.
-      /// </summary>
-      /// <param name="offset"></param>
-      /// <param name="limit"></param>
-      /// <returns></returns>
-      [HttpGet]
+        /// <summary>
+        /// Returns blocks based on the offset and limit. The blocks are sorted from from lowest to highest index. You can use the "link" HTTP header to get dynamic paging links.
+        /// </summary>
+        /// <param name="offset">If value set to null, then query will start from block tip, not from 0 (genesis).</param>
+        /// <param name="limit">Number of blocks to return. Maximum 50.</param>
+        [HttpGet]
+        [Route("blocks")]
+        public IActionResult Blocks(int offset, int count, int sort)
+        {
+            var list = new QueryResult<SimplifiedBlock>();
+            var item = new List<SimplifiedBlock>();
+            var last = storage.GetLatestBlock();
+            if (sort == 1)
+            {
+                offset = (int)last.BlockIndex - offset - count + 1;
+            }
+            var block = storage.Blocks(offset, count);
+            long lsttime = 0;
+            foreach (var blk in block.Items)
+            {
+                item.Add(new SimplifiedBlock { 
+                    Size=blk.BlockSize,
+                    Height=blk.BlockIndex,
+                    Time=blk.BlockTime,
+                    ProofType= BlockType.POW_Sha256D,
+                    TxCount=blk.TransactionCount,
+                    Weight=(long)(blk.Difficulty*1000),
+                    MedianTime=blk.BlockTime-lsttime,
+                });
+                lsttime = blk.BlockTime;
+            }
+            list.Items = sort == 1 ? item.OrderByDescending(a => a.Height) : item;
+            list.Offset = block.Offset;
+            list.Limit = block.Limit;
+            list.Total = block.Total;
+            return OkPaging(list);
+        }
+
+        /// <summary>
+        /// Return transactions in a block based on block hash.
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        [HttpGet]
       [Route("block/{hash}/transactions")]
       public IActionResult GetBlockByHashTransactions(string hash, [Range(0, int.MaxValue)] int offset = 0, [Range(1, 50)] int limit = 10)
       {
@@ -261,7 +301,7 @@ namespace XOuranos.Index.Core.Controllers
          }
       }
 
-      private IActionResult OkItem<T>(T result)
+        private IActionResult OkItem<T>(T result)
       {
          if (result == null)
          {
