@@ -189,7 +189,20 @@ namespace XOuranos.Index.Core.Storage.Mongo
          return mongoBlockToStorageBlock.Map(recentBlock);
       }
 
-      public SyncBlockInfo BlockByIndex(long blockIndex)
+        public List<SyncBlockInfo> GetLatestBlocks()
+        {
+            List<SyncBlockInfo> list = new List<SyncBlockInfo>();
+            List<BlockTable> recentBlocks = mongoDb.BlockTable.AsQueryable().OrderByDescending(a => a.BlockIndex).Take(5).ToList();
+            foreach(BlockTable recentBlock in recentBlocks)
+            {
+                var item= mongoBlockToStorageBlock.Map(recentBlock);
+                list.Add(item);
+            }
+
+            return list;
+        }
+
+        public SyncBlockInfo BlockByIndex(long blockIndex)
       {
          FilterDefinition<BlockTable> filter = Builders<BlockTable>.Filter.Eq(info => info.BlockIndex, blockIndex);
 

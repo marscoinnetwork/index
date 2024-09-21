@@ -10,8 +10,9 @@ namespace XOuranos.Index.Core.Storage
    public interface IStorage
    {
       SyncBlockInfo GetLatestBlock();
+        List<SyncBlockInfo> GetLatestBlocks();
 
-      int GetMemoryTransactionsCount();
+        int GetMemoryTransactionsCount();
 
       QueryAddress AddressBalance(string address);
 

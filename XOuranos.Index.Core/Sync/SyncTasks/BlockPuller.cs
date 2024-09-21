@@ -206,31 +206,34 @@ namespace XOuranos.Index.Core.Sync.SyncTasks
                while (pendingBlocksToAddToStorage.TryTake(out _)) { }
                drainBlockingCollection = false;
             }
-                if (CancellationToken.IsCancellationRequested) continue;
-            SyncBlockTransactionsOperation block = pendingBlocksToAddToStorage.Take(CancellationToken);
+                try
+                {
+                    SyncBlockTransactionsOperation block = pendingBlocksToAddToStorage.Take(CancellationToken);
 
-            storageOperations.AddToStorageBatch(currentStorageBatch, block);
+                    storageOperations.AddToStorageBatch(currentStorageBatch, block);
 
-            bool ibd = Runner.GlobalState.ChainTipHeight - block.BlockInfo.Height > 20;
+                    bool ibd = Runner.GlobalState.ChainTipHeight - block.BlockInfo.Height > 20;
 
-            bool bip30Issue = bip30Blocks.Contains(block.BlockInfo.Height + 1);
+                    bool bip30Issue = bip30Blocks.Contains(block.BlockInfo.Height + 1);
 
-            if (ibd && !bip30Issue &&
-                currentStorageBatch.GetBlockCount() < config.DbBatchCount &&
-                currentStorageBatch.GetBatchSize() <= config.DbBatchSize)
-            {
-               continue;
-            }
+                    if (ibd && !bip30Issue &&
+                        currentStorageBatch.GetBlockCount() < config.DbBatchCount &&
+                        currentStorageBatch.GetBatchSize() <= config.DbBatchSize)
+                    {
+                        continue;
+                    }
 
-            long totalBlocks = currentStorageBatch.GetBlockCount();
-            double totalSeconds = watchBatch.Elapsed.TotalSeconds;
-            double blocksPerSecond = totalBlocks / totalSeconds;
-            double secondsPerBlock = totalSeconds / totalBlocks;
+                    long totalBlocks = currentStorageBatch.GetBlockCount();
+                    double totalSeconds = watchBatch.Elapsed.TotalSeconds;
+                    double blocksPerSecond = totalBlocks / totalSeconds;
+                    double secondsPerBlock = totalSeconds / totalBlocks;
 
-            log.LogInformation($"Puller - blocks={currentStorageBatch.GetBlockCount()}, height = {block.BlockInfo.Height}, batch size = {((decimal)currentStorageBatch.GetBatchSize() / 1000000):0.00}mb, Seconds = {watchBatch.Elapsed.TotalSeconds}, fetchs = {blocksPerSecond:0.00}b/s ({secondsPerBlock:0.00}s/b). ({pendingBlocksToAddToStorage.Count})");
+                    log.LogInformation($"Puller - blocks={currentStorageBatch.GetBlockCount()}, height = {block.BlockInfo.Height}, batch size = {((decimal)currentStorageBatch.GetBatchSize() / 1000000):0.00}mb, Seconds = {watchBatch.Elapsed.TotalSeconds}, fetchs = {blocksPerSecond:0.00}b/s ({secondsPerBlock:0.00}s/b). ({pendingBlocksToAddToStorage.Count})");
 
-            Runner.Get<BlockStore>().Enqueue(currentStorageBatch);
-            currentStorageBatch = StorageBatchFactory.GetStorageBatch();
+                    Runner.Get<BlockStore>().Enqueue(currentStorageBatch);
+                    currentStorageBatch = StorageBatchFactory.GetStorageBatch();
+                }
+                catch { }
 
             watchBatch.Restart();
          }

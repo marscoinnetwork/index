@@ -282,7 +282,18 @@ namespace XOuranos.Index.Core.Controllers
          return OkItem(storage.GetLatestBlock());
       }
 
-      private IActionResult OkPaging<T>(QueryResult<T> result)
+        /// <summary>
+        /// Returns the latest blocks that is available.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("block/latest/transactions")]
+        public IActionResult GetLatestBlocks()
+        {
+            return OkItem(storage.GetLatestBlocks());
+        }
+
+        private IActionResult OkPaging<T>(QueryResult<T> result)
       {
          if (result == null)
          {
