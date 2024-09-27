@@ -1,7 +1,7 @@
 {
   "Chain": {
     "Name": "XOuranos Chain",
-    "Symbol": "OUR",
+    "Symbol": "X1",
     "Description": "Ouranos is creating an cutting-edge, proof-of-work blockchain, where new algorithm is the most future choice.",
     "Url": "https://www.xouranos.com/",
     "Logo": "https://www.xouranos.com/res/logo.png",
@@ -9,13 +9,13 @@
     "Color": "#f3b623"
   },
   "Network": {
-    "NetworkConsensusFactoryType": "XOuranos.Consensus.BlockInfo.PosConsensusFactory, XOuranos.Node",
+    "NetworkConsensusFactoryType": "XOuranos.X1.Consensus.X1ConsensusFactory,XOuranos.Node",
     "NetworkPubkeyAddressPrefix": 0,
     "NetworkScriptAddressPrefix": 5,
-    "NetworkWitnessPrefix": "our",
+    "NetworkWitnessPrefix": "x1",
     "P2PPort": 23333,
     "RPCPort": 43333,
-    "APIPort": 37220
+    "APIPort": 47220
   },
    "Indexer": {
       "StoreRawTransactions": true

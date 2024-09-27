@@ -588,8 +588,8 @@ namespace XOuranos.Index.Core.Storage.Mongo
          // make sure fields are computed
          AddressComputedTable addressComputedTable = ComputeAddressBalance(address);
 
-         IQueryable<AddressHistoryComputedTable> filter = mongoDb.AddressHistoryComputedTable.AsQueryable()
-            .Where(t => t.Address == address);
+            IQueryable<AddressHistoryComputedTable> filter = mongoDb.AddressHistoryComputedTable.AsQueryable()
+               .Where(t => t.Address == address);
 
          SyncBlockInfo storeTip = globalState.StoreTip;
          if (storeTip == null)
@@ -608,14 +608,14 @@ namespace XOuranos.Index.Core.Storage.Mongo
          // This will first perform one db query.
          long total = addressComputedTable.CountSent + addressComputedTable.CountReceived + addressComputedTable.CountStaked + addressComputedTable.CountMined;
 
-         // Filter by the position, in the order of first entry being 1 and then second entry being 2.
-         filter = filter.OrderBy(s => s.Position);
+            // Filter by the position, in the order of first entry being 1 and then second entry being 2.
+            //filter = filter.OrderByDescending(s => s.Position);
 
-         long startPosition = offset ?? total - limit;
+            long startPosition = total - limit - (offset ?? 10);
          long endPosition = (startPosition) + limit;
 
-         // Get all items that is higher than start position and lower than end position.
-         var list = filter.Where(w => w.Position > startPosition && w.Position <= endPosition).ToList();
+            // Get all items that is higher than start position and lower than end position.
+            var list = filter.Where(w => w.Position > startPosition && w.Position <= endPosition).ToList().OrderByDescending(a => a.Position);
 
          // Loop all transaction IDs and get the transaction object.
          IEnumerable<QueryAddressItem> transactions = list.Select(item => new QueryAddressItem

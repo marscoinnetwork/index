@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>XOuranos.Index</name>
+    </assembly>
+    <members>
+        <member name="T:XOuranos.Index.Program">
+            <summary>
+            The application program.
+            </summary>
+        </member>
+    </members>
+</doc>
