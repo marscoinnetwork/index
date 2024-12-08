@@ -1,0 +1,20 @@
+{
+  "profiles": {
+    "Docker (Development)": {
+      "commandName": "Docker",
+      "commandLineArgs": "--chain=Development",
+      "launchBrowser": true,
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "publishAllPorts": true
+    },
+    "XOuranos": {
+      "commandName": "Project",
+      "commandLineArgs": "--chain=X1",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://localhost:9910/"
+    }
+  }
+}
