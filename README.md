@@ -105,10 +105,6 @@ All our technologies are available on docker, so can easily be upgraded and down
 - Running a MongoDB instance as indexing storage
 - REST API that can be consumed by Block Explorer
 
-#### DB schema
-Can be found here:  
-https://github.com/block-core/Marscore-indexer/blob/master/src/Marscore.Indexer/doc/dbschema.md
-
 #### API
 OpenAPI http://[server-url]:[port]/docs/
 
@@ -120,8 +116,6 @@ The process of configuration flows like this:
 
 1. Startup looks at what chain it should start, this is always in the form of ticker symbol, such as BTC or MSC.
 2. Configuration is read from appsettings.json.
-3. Configuration is downloaded from https://chains.Marscore.net/
-4. Configuration is read from appsettings.Development.json.
 
 Out of the box, the configuration when you run from Visual Studio will connect to a local running node and local MongoDB instance.
 
