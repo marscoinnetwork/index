@@ -1,0 +1,59 @@
+{
+  "Chain": {
+    "Name": "Marscoin Chain",
+    "Symbol": "MSC",
+    "Description": "Becoming the universal currency on Mars,the first decentralized mining pool blockchain!",
+    "Url": "https://marscoin.network/",
+    "Logo": "https://marscoin.network/res/logo.png",
+    "Icon": "https://marscoin.network/res/logo.png",
+    "Color": "#f3b623"
+  },
+  "Network": {
+    "NetworkConsensusFactoryType": "Marscore.Networks.X1.Consensus.X1ConsensusFactory,Marscore.Networks.X1",
+    "NetworkPubkeyAddressPrefix": 0,
+    "NetworkScriptAddressPrefix": 5,
+    "NetworkWitnessPrefix": "msc",
+    "P2PPort": 333,
+    "RPCPort": 332,
+    "APIPort": 334
+  },
+   "Indexer": {
+      "StoreRawTransactions": true
+   },
+   "Explorer": {
+      "Indexer": {
+         "ApiUrl": "http://localhost:9910/api",
+         "DocUrl": "http://localhost:9910/docs"
+      },
+      "Currency": {
+         "ApiUrl": "https://api.coincap.io/v2/rates",
+         "AutoConvert": false
+      },
+      "Ticker": {
+         "WebUrl": "https://coinpaprika.com/coin/btc-bitcoin/",
+         "ApiUrl": "https://api.coinpaprika.com/v1/tickers/btc-bitcoin?quotes=USD,BTC",
+         "PricePath": "quotes.BTC.price",
+         "PricePathBTC": "quotes.BTC.price",
+         "PricePathUSD": "quotes.USD.price",
+         "PercentagePath": "quotes.BTC.percent_change_1h",
+         "IsBitcoinPrice": true
+      },
+    "Setup": {
+      "Title": "Marscore Blockchain Explorer",
+      "Footer": "Blockchain for Marscore. Empowering developers to make custom blockchains.",
+      "Links": [
+        {
+          "icon": "fab fa-github",
+          "url": "https://github.com/marscoinnetwork"
+        },
+        {
+          "icon": "fas fa-link",
+          "url": "https://marscoin.network/"
+        }
+      ]
+    },
+      "Features": {
+         "POSWeight": false
+      }
+   }
+}

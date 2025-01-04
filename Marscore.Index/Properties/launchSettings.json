@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "Marscoin": {
+      "commandName": "Project",
+      "commandLineArgs": "--chain=MSC",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://localhost:9910/"
+    }
+  }
+}
