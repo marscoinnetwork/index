@@ -38,14 +38,14 @@ namespace Marscore.Index.Core
          IndexerSettings indexer = new IndexerSettings();
 
          configuration.GetSection("Indexer").Bind(indexer);
-
-         switch (indexer.DbType)
-         {
-            case "MongoDb":
-               services.AddMongoDatabase();
-               break;
-            default: throw new InvalidOperationException();
-         }
+         services.AddMongoDatabase();
+         //switch (indexer.DbType)
+         //{
+         //   case "MongoDb":
+               
+         //      break;
+         //   default: throw new InvalidOperationException();
+         //}
 
          // services.AddSingleton<QueryHandler>();
          services.AddSingleton<StatsHandler>();
