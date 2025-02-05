@@ -105,7 +105,7 @@ namespace Marscore.Index.Core
                      Contact = new OpenApiContact
                      {
                         Name = "Marscore",
-                        Url = new Uri("https://marscoin.network/")
+                        Url = new Uri("https://martiscoin.org/")
                      }
                   });
 
