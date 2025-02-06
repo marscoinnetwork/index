@@ -130,7 +130,7 @@ namespace Marscore.Index.Core.Sync.SyncTasks
          }
          catch (Exception e)
          {
-            if (e.Message.Contains("Block not found"))
+            if (e.Message.Contains("Blockhash not found"))
             {
                return null;
             }

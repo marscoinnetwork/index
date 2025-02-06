@@ -109,7 +109,7 @@ namespace Marscore.Index.Core.Sync.SyncTasks
             return false;
          }
 
-         if (Runner.GlobalState.PullingTip == null)
+         if (Runner.GlobalState.PullingTip == null&& Runner.GlobalState.StoreTip!=null)
          {
             // start pulling blocks form this tip
             Runner.GlobalState.PullingTip = await clientFactory.Create(syncConnection).GetBlockAsync(Runner.GlobalState.StoreTip.BlockHash);
