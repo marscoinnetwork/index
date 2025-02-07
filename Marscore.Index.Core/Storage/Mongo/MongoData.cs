@@ -150,31 +150,40 @@ namespace Marscore.Index.Core.Storage.Mongo
          return result;
       }
 
-      /// <summary>
-      /// Returns block information in the section specified with offset and limit. If offset is set to 0, then the last page is returned.
-      /// </summary>
-      /// <param name="offset">Set to zero if last page should be returned.</param>
-      /// <param name="limit">Amount of items to return.</param>
-      /// <returns></returns>
-      public QueryResult<SyncBlockInfo> Blocks(int? offset, int limit)
-      {
-         SyncBlockInfo storeTip = globalState.StoreTip;
-         long index = storeTip?.BlockIndex ?? mongoDb.BlockTable.Find(Builders<BlockTable>.Filter.Empty).CountDocuments() - 1;
+        /// <summary>
+        /// Returns block information in the section specified with offset and limit. If offset is set to 0, then the last page is returned.
+        /// </summary>
+        /// <param name="offset">Set to zero if last page should be returned.</param>
+        /// <param name="limit">Amount of items to return.</param>
+        /// <returns></returns>
+        public QueryResult<SyncBlockInfo> Blocks(int? offset, int limit, int ispow)
+        {
+            SyncBlockInfo storeTip = globalState.StoreTip;
+            long index = storeTip?.BlockIndex ?? mongoDb.BlockTable.Find(Builders<BlockTable>.Filter.Empty).CountDocuments() - 1;
 
-         // Get the total number of items based off the index.
-         long total = index + 1;
+            // Get the total number of items based off the index.
+            long total = index + 1;
 
-         // If the offset has value, then use it, if not fetch the latest blocks.
-         long startPosition = offset ?? total - limit;
-         long endPosition = startPosition + limit;
+            // If the offset has value, then use it, if not fetch the latest blocks.
+            long startPosition = offset ?? total - limit;
+            long endPosition = startPosition + limit;
 
-         // The BlockIndex is 0 based, so we must perform >= to get first.
-         IQueryable<BlockTable> filter = mongoDb.BlockTable.AsQueryable().OrderBy(b => b.BlockIndex).Where(w => w.BlockIndex >= startPosition && w.BlockIndex < endPosition);
+            // The BlockIndex is 0 based, so we must perform >= to get first.
+            IQueryable<BlockTable> filter = mongoDb.BlockTable.AsQueryable().OrderBy(b => b.BlockIndex).
+                   Where(w => w.BlockIndex >= startPosition && w.BlockIndex < endPosition);
+            if (ispow == 2)
+            {
+                filter = filter.Where(w => w.PosFlags == "proof-of-stake");
+            }
+            else if (ispow == 1)
+            {
+                filter = filter.Where(w => w.PosFlags == "proof-of-work");
+            }
 
-         IEnumerable<SyncBlockInfo> list = filter.ToList().Select(mongoBlockToStorageBlock.Map);
+            IEnumerable<SyncBlockInfo> list = filter.ToList().Select(mongoBlockToStorageBlock.Map);
 
-         return new QueryResult<SyncBlockInfo> { Items = list, Total = total, Offset = (int)startPosition, Limit = limit };
-      }
+            return new QueryResult<SyncBlockInfo> { Items = list, Total = total, Offset = (int)startPosition, Limit = limit };
+        }
 
       public SyncBlockInfo GetLatestBlock()
       {

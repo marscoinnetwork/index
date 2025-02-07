@@ -142,9 +142,9 @@ namespace Marscore.Index.Core.Controllers
       /// <param name="limit">Number of blocks to return. Maximum 50.</param>
       [HttpGet]
       [Route("block")]
-      public IActionResult GetBlocks([Range(0, int.MaxValue)] int? offset = null, [Range(1, 50)] int limit = 10)
+      public IActionResult GetBlocks([Range(0, int.MaxValue)] int? offset = null, [Range(1, 50)] int limit = 10,int pow=0)
       {
-         return OkPaging(storage.Blocks(offset, limit));
+            return OkPaging(storage.Blocks(offset, limit, pow));
       }
 
         /// <summary>
@@ -163,7 +163,7 @@ namespace Marscore.Index.Core.Controllers
             {
                 offset = (int)last.BlockIndex - offset - count + 1;
             }
-            var block = storage.Blocks(offset, count);
+            var block = storage.Blocks(offset, count, 0);
             long lsttime = 0;
             foreach (var blk in block.Items)
             {

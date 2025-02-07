@@ -33,7 +33,7 @@ namespace Marscore.Index.Core.Storage
 
       QueryResult<SyncTransactionInfo> TransactionsByBlock(long index, int offset, int limit);
 
-      QueryResult<SyncBlockInfo> Blocks(int? offset, int limit);
+      QueryResult<SyncBlockInfo> Blocks(int? offset, int limit,int ispow);
 
       SyncBlockInfo BlockByHash(string blockHash);
 
